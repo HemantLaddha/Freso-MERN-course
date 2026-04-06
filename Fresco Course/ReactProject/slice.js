@@ -26,9 +26,10 @@ export const getCourses = createAsyncThunk("getCourses", async () => {
 });
 
 export const addSeats = createAsyncThunk("addSeats", async (args) => {
-  const response = await axios.patch(`/api/courses/${args.id}`, {
+  await axios.patch(`/api/courses/${args.id}`, {
     availableSeats: args.updatedSeatCount,
   });
+  const response = await axios.get("/api/courses");
   return response.data;
 });
 
@@ -75,11 +76,7 @@ export const slice = createSlice({
     });
 
     builder.addCase(addSeats.fulfilled, (state, action) => {
-      const updatedCourse = action.payload;
-
-      state.courses = state.courses.map((course) =>
-        course.id === updatedCourse.id ? updatedCourse : course
-      );
+      state.courses = action.payload;
     });
   },
 });
